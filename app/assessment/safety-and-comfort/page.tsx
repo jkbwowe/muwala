@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/navigation';
 
 // ============================================================================
 // SVG ICONS
@@ -148,6 +149,12 @@ export default function QuestionnairePage2() {
     );
   };
 
+  const router = useRouter();
+  
+    const handleNext = () =>{
+      //logic
+      router.push('/assessment/sexual-health-knowledge')
+    }
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[140px]">
       
@@ -418,6 +425,7 @@ export default function QuestionnairePage2() {
 
             {/* Next Button */}
             <button 
+              onClick={handleNext}
               disabled={!isNextEnabled}
               className={`
                 flex items-center gap-2 font-semibold text-[15px] px-7 py-3 rounded-[10px] min-h-[44px] transition-all duration-200

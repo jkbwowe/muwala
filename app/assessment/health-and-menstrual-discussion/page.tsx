@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import {useRouter} from 'next/navigation'
 
 // ============================================================================
 // SVG ICONS
@@ -301,6 +302,12 @@ export default function QuestionnairePage5() {
     );
   };
 
+  const router = useRouter();
+    
+  const handleNext = () =>{
+    //logic
+    router.push('/assessment/your-future-and-coping')
+  }
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[140px]">
       {/* 1. TOP NAVIGATION BAR */}
@@ -569,6 +576,7 @@ export default function QuestionnairePage5() {
 
             {/* Next Button */}
             <button
+              onClick={handleNext}
               type="button"
               disabled={!isNextEnabled}
               className={`

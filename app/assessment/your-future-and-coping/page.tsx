@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // ============================================================================
 // SVG ICONS
@@ -213,6 +214,7 @@ export default function QuestionnairePage6() {
   const isAllAnswered = qn22.length > 0 && qn64 !== "" && qn68 !== "";
 
   // Handle Form Submission
+  const router = useRouter();
   const handleSubmit = () => {
     if (!isAllAnswered || isSubmitting) return;
     setIsSubmitting(true);
@@ -220,9 +222,8 @@ export default function QuestionnairePage6() {
     // Simulate API call and model payload construction
     // Dev note: qn22 answer string would be: qn22.join(" ")
     setTimeout(() => {
-      // Mock navigation to results page
-      console.log("Navigating to Results...");
-      setIsSubmitting(false);
+      // navigation to results page
+      router.push('/assessment/results')
     }, 1800);
   };
 

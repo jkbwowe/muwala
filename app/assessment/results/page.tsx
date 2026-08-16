@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // ============================================================================
 // ICONS
@@ -438,6 +439,12 @@ export default function ResultsPage() {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
+  const router = useRouter();
+
+  const handleStartNewAssessment = () => {
+    router.push('/assessment/about-you')
+  }
+
   return (
     <div className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col">
       {/* ADD CUSTOM ANIMATIONS */}
@@ -588,7 +595,9 @@ export default function ResultsPage() {
             <DownloadIcon className="w-[18px] h-[18px]" />
             Save Results as PDF
           </button>
-          <button className="flex-1 bg-transparent border-[1.5px] border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] font-semibold text-[15px] p-[16px] md:px-[24px] rounded-[10px] flex items-center justify-center transition-colors cursor-pointer">
+          <button
+            onClick={handleStartNewAssessment}
+          className="flex-1 bg-transparent border-[1.5px] border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] font-semibold text-[15px] p-[16px] md:px-[24px] rounded-[10px] flex items-center justify-center transition-colors cursor-pointer">
             Start a New Assessment
           </button>
         </div>

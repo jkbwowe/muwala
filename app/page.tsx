@@ -1,4 +1,8 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 
 // ============================================================================
 // SVG ICONS
@@ -51,6 +55,12 @@ const HeartIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function MuwalaLandingPage() {
+  const router = useRouter();
+
+  const handleStart = () => {
+    router.push('/assessment/about-you')
+  }
+
   return (
     <main className="min-h-screen font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col">
       
@@ -89,7 +99,9 @@ export default function MuwalaLandingPage() {
               MUWALA is a private, judgment-free assessment designed for young women. Answer a few questions and receive a personalised risk report — instantly, offline.
             </p>
             
-            <button className="w-full md:w-auto bg-[#1B9DC8] hover:bg-[#126E8E] text-white font-semibold text-[16px] px-8 py-4 rounded-[10px] min-h-[44px] flex justify-center items-center gap-2 transition-colors mb-4 shadow-sm">
+            <button
+              onClick={handleStart}
+              className="w-full md:w-auto bg-[#1B9DC8] hover:bg-[#126E8E] text-white font-semibold text-[16px] px-8 py-4 rounded-[10px] min-h-[44px] flex justify-center items-center gap-2 transition-colors mb-4 shadow-sm">
               Start Assessment &rarr;
             </button>
             

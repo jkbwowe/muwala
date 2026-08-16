@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/navigation';
 
 // ============================================================================
 // SVG ICONS
@@ -78,6 +79,13 @@ export default function QuestionnairePage1() {
     "All of the time", "Most of the time", "More than half of the time", 
     "Less than half of the time", "Some of the time", "At no time"
   ];
+
+  const router = useRouter();
+
+  const handleNext = () =>{
+    //logic
+    router.push('/assessment/safety-and-comfort')
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[140px]">
@@ -296,6 +304,7 @@ export default function QuestionnairePage1() {
 
             {/* Next Button */}
             <button 
+              onClick={handleNext}
               disabled={!isNextEnabled}
               className={`
                 flex items-center gap-2 font-semibold text-[15px] px-7 py-3 rounded-[10px] min-h-[44px] transition-all duration-200
