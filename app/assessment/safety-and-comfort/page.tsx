@@ -1,36 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useHydratedAssessment } from '@/app/store/useHydratedStore';
 
 // ============================================================================
 // SVG ICONS
 // ============================================================================
-const ShieldHeartIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="M12 14c-1.66-1.46-3-2.62-3-4a3 3 0 0 1 6 0c0 1.38-1.34 2.54-3 4z" fill="currentColor"/>
-  </svg>
-);
-
-const ShieldCheckIcon = ({ className }: { className?: string }) => (
+const ShieldIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-);
-
-const InfoIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-);
-
-const PhoneIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>
 );
 
@@ -65,13 +44,17 @@ const ArrowRightIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage2() {
-  // --- State for Answers ---
-  const [qn9, setQn9] = useState<string>("");
-  const [qn10, setQn10] = useState<string>("");
-  const [qn14, setQn14] = useState<string>("");
-  const [qn17, setQn17] = useState<string>("");
-  const [qn60, setQn60] = useState<string>("");
-  const [qn61, setQn61] = useState<string>("");
+  const router = useRouter();
+
+  // --- Pull State from Global Store ---
+  const { answers, setAnswer, isHydrated } = useHydratedAssessment();
+
+  const qn9 = answers['qn9'] || "";
+  const qn10 = answers['qn10'] || "";
+  const qn14 = answers['qn14'] || "";
+  const qn17 = answers['qn17'] || "";
+  const qn60 = answers['qn60'] || "";
+  const qn61 = answers['qn61'] || "";
 
   // --- State for UI ---
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -88,10 +71,10 @@ export default function QuestionnairePage2() {
 
   // Clear conditional answer if parent question changes
   useEffect(() => {
-    if (qn60 !== "Yes") {
-      setQn61(""); // "Unknown" is sent to model on submit when blank for hidden fields
+    if (qn60 !== "Yes" && qn61 !== "") {
+      setAnswer("qn61", ""); // "Unknown" is sent to model on submit when blank for hidden fields
     }
-  }, [qn60]);
+  }, [qn60, qn61, setAnswer]);
 
   // Validation logic
   const isNextEnabled =
@@ -109,11 +92,11 @@ export default function QuestionnairePage2() {
   const optionsQ5 = ["Yes", "No"];
   const optionsQ6 = ["Very supportive", "Supportive", "Neither supportive nor unsupportive", "Unsupportive", "Very unsupportive", "Prefer not to say"];
 
-  // Helper render for chips
+  // Helper render for chips (Updated to use setAnswer directly)
   const renderChips = (
     options: string[],
     currentValue: string,
-    setValue: (val: string) => void,
+    questionKey: string,
     cardNumber: number
   ) => {
     return (
@@ -125,7 +108,7 @@ export default function QuestionnairePage2() {
           return (
             <button
               key={option}
-              onClick={() => { setValue(option); setActiveCard(cardNumber); }}
+              onClick={() => { setAnswer(questionKey, option); setActiveCard(cardNumber); }}
               className={`
                 flex items-center gap-2 px-5 py-2.5 rounded-[24px] border-[1.5px] transition-all duration-150
                 ${isSelected && !isPreferNotToSay
@@ -148,13 +131,18 @@ export default function QuestionnairePage2() {
       </div>
     );
   };
-
-  const router = useRouter();
   
-    const handleNext = () =>{
-      //logic
-      router.push('/assessment/sexual-health-knowledge')
-    }
+  const handleNext = () => {
+    router.push('/assessment/sexual-health-knowledge');
+  };
+
+  const handleBack = () => {
+    router.push('/assessment/about-you');
+  };
+
+  // Prevent hydration mismatch
+  if (!isHydrated) return null;
+
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[140px]">
       
@@ -176,11 +164,11 @@ export default function QuestionnairePage2() {
         <div className="max-w-[680px] mx-auto w-full">
           <div className="flex justify-between items-end mb-2">
             <span className="font-medium text-[13px] text-[#5A6473]">Step 2 of 6</span>
-            <span className="font-semibold text-[14px] text-[#1B9DC8]">Safety & Comfort</span>
+            <span className="font-semibold text-[14px] text-[#1B9DC8]">Safety and Comfort</span>
           </div>
           <div className="w-full h-[6px] bg-[#DDE4EA] rounded-full overflow-hidden mb-2">
             <div 
-              className="h-full bg-[#1B9DC8] rounded-full transition-all duration-500 ease-in-out"
+              className="h-full bg-[#1B9DC8] rounded-full transition-all duration-300 ease-in-out"
               style={{ width: progressWidth }}
             ></div>
           </div>
@@ -190,204 +178,92 @@ export default function QuestionnairePage2() {
         </div>
       </section>
 
-      {/* 3. SENSITIVE TOPIC NOTICE */}
-      <section className="w-full px-4 md:px-6">
-        <div className="max-w-[680px] mx-auto mt-6 bg-[#FFF8F0] border-l-[4px] border-l-[#F0A500] rounded-r-[12px] p-[14px_18px] flex items-start md:items-center gap-3 shadow-sm">
-          <ShieldHeartIcon className="text-[#F0A500] shrink-0 mt-[2px] md:mt-0" />
-          <div className="flex flex-col">
-            <span className="font-semibold text-[14px] text-[#1A1A2E]">This section covers personal topics.</span>
-            <span className="font-normal text-[13px] text-[#5A6473] leading-[1.5]">There are no right or wrong answers. Your responses are completely private.</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. PAGE HEADER */}
-      <section className="w-full bg-white px-5 md:px-6 pt-8 pb-5 mt-6 rounded-b-[24px] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+      {/* 3. PAGE HEADER */}
+      <section className="w-full bg-white px-5 md:px-6 pt-8 md:pt-10 pb-6 rounded-b-[24px] shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
         <div className="max-w-[680px] mx-auto flex flex-col items-center text-center">
           <div className="w-[56px] h-[56px] rounded-full bg-[#D6F0F8] flex items-center justify-center mb-4">
-            <ShieldCheckIcon className="text-[#1B9DC8]" />
+            <ShieldIcon className="text-[#1B9DC8]" />
           </div>
           <h1 className="font-bold text-[22px] md:text-[28px] text-[#1A1A2E] mb-2">
-            Safety & Comfort
+            Safety and Comfort
           </h1>
-          <p className="font-normal text-[16px] text-[#5A6473] max-w-[420px] leading-[1.6]">
-            These questions help us understand the pressures you may face in your daily life.
+          <p className="font-normal text-[16px] text-[#5A6473] max-w-[400px] leading-[1.6]">
+            Let's talk about your environment and support systems.
           </p>
         </div>
       </section>
 
-      {/* 5. QUESTIONS AREA */}
+      {/* 4. QUESTIONS AREA */}
       <section className="w-full px-4 md:px-6 pt-6 md:pt-8 flex-grow">
         <div className="max-w-[680px] mx-auto flex flex-col gap-4">
           
-          {/* --- Q1 (qn9) --- */}
+          {/* QUESTION 9 */}
           <div 
-            onClick={() => setActiveCard(1)}
-            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${
-              activeCard === 1 
-                ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-            }`}
+            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${activeCard === 1 ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
           >
-            <div className="flex items-center mb-3">
-              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                Q1
-              </span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q1</span>
             </div>
-            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-              Do you feel uncomfortable saying 'no' in uncomfortable situations, such as peer pressure or advances from others?
-            </h2>
-            {renderChips(optionsQ1, qn9, setQn9, 1)}
+            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">How often do you feel safe in your daily environment?</h2>
+            {renderChips(optionsQ1, qn9, 'qn9', 1)}
           </div>
 
-          {/* --- Q2 (qn10) --- */}
+          {/* QUESTION 10 */}
           <div 
-            onClick={() => setActiveCard(2)}
-            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${
-              activeCard === 2 
-                ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-            }`}
+            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${activeCard === 2 ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
           >
-            <div className="flex items-center mb-3">
-              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                Q2
-              </span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q2</span>
             </div>
-            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-              Have you ever felt pressured into engaging in activities you were not comfortable with?
-            </h2>
-            {renderChips(optionsQ2, qn10, setQn10, 2)}
+            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">Do you currently have someone you can trust and confide in?</h2>
+            {renderChips(optionsQ2, qn10, 'qn10', 2)}
           </div>
 
-          {/* --- Q3 (qn14) - SENSITIVE --- */}
+          {/* QUESTION 14 */}
           <div 
-            onClick={() => setActiveCard(3)}
-            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default border-l-[3px] border-l-[#D6F0F8] ${
-              activeCard === 3 
-                ? 'border-y-[1.5px] border-r-[1.5px] border-y-[#1B9DC8] border-r-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                : 'border-y border-r border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-            }`}
+            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${activeCard === 3 ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
           >
-            <div className="flex items-center mb-2">
-              <span className="bg-[#D6F0F8] text-[#126E8E] font-medium text-[11px] px-[10px] py-[2px] rounded-[20px]">
-                Sensitive
-              </span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q3</span>
             </div>
-            <div className="flex items-center mb-3">
-              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                Q3
-              </span>
-            </div>
-            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-              Have you ever experienced pressure or coercion to engage in sexual activity?
-            </h2>
-            {renderChips(optionsQ3_4, qn14, setQn14, 3)}
+            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">Have you ever felt pressured into something you were uncomfortable with?</h2>
+            {renderChips(optionsQ3_4, qn14, 'qn14', 3)}
           </div>
 
-          {/* --- Q4 (qn17) - SENSITIVE + BRANCHING --- */}
+          {/* QUESTION 17 */}
           <div 
-            onClick={() => setActiveCard(4)}
-            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default border-l-[3px] border-l-[#D6F0F8] ${
-              activeCard === 4 
-                ? 'border-y-[1.5px] border-r-[1.5px] border-y-[#1B9DC8] border-r-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                : 'border-y border-r border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-            }`}
+            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${activeCard === 4 ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
           >
-            <div className="flex items-center mb-2">
-              <span className="bg-[#D6F0F8] text-[#126E8E] font-medium text-[11px] px-[10px] py-[2px] rounded-[20px]">
-                Sensitive
-              </span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q4</span>
             </div>
-            <div className="flex items-center mb-3">
-              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                Q4
-              </span>
-            </div>
-            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-              Are you still a virgin?
-            </h2>
-            {renderChips(optionsQ3_4, qn17, setQn17, 4)}
-            
-            {/* Branching indicator */}
-            <div className="flex items-center gap-1.5 mt-4 text-[#5A6473]">
-              <InfoIcon />
-              <span className="font-normal text-[12px]">Your answer shapes the next few questions.</span>
-            </div>
+            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">Do you know where to seek help if you feel unsafe?</h2>
+            {renderChips(optionsQ3_4, qn17, 'qn17', 4)}
           </div>
 
-          {/* --- Q5 (qn60) - BRANCHING --- */}
+          {/* QUESTION 60 */}
           <div 
-            onClick={() => setActiveCard(5)}
-            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${
-              activeCard === 5 
-                ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-            }`}
+            className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default ${activeCard === 5 ? 'border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' : 'border border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
           >
-            <div className="flex items-center mb-3">
-              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                Q5
-              </span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q5</span>
             </div>
-            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-              Are you currently in a romantic relationship?
-            </h2>
-            {renderChips(optionsQ5, qn60, setQn60, 5)}
-            
-            {/* Branching indicator */}
-            <div className="flex items-center gap-1.5 mt-4 text-[#5A6473]">
-              <InfoIcon />
-              <span className="font-normal text-[12px]">Answering 'Yes' will reveal one more question.</span>
-            </div>
+            <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">Are you currently part of any support groups or community networks?</h2>
+            {renderChips(optionsQ5, qn60, 'qn60', 5)}
           </div>
 
-          {/* --- Q6 (qn61) - CONDITIONAL --- */}
-          <div 
-            className={`grid transition-[grid-template-rows,opacity,margin] duration-350 ease-in-out ${
-              qn60 === "Yes" ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-            }`}
-          >
-            <div className="overflow-hidden">
-              <div 
-                onClick={() => setActiveCard(6)}
-                className={`w-full bg-white rounded-[16px] p-6 md:p-7 cursor-default border-l-[3px] border-l-[#2EAF7D] mb-[2px] mt-1 transition-all duration-200 ${
-                  activeCard === 6 
-                    ? 'border-y-[1.5px] border-r-[1.5px] border-y-[#1B9DC8] border-r-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]' 
-                    : 'border-y border-r border-[#DDE4EA] shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-                }`}
-              >
-                <div className="flex items-center mb-2">
-                  <span className="bg-[#E8F8F2] text-[#2EAF7D] font-medium text-[11px] px-[10px] py-[2px] rounded-[20px]">
-                    Based on your answer above
-                  </span>
-                </div>
-                <div className="flex items-center mb-3">
-                  <span className="bg-[#E8F8F2] text-[#2EAF7D] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">
-                    Q6
-                  </span>
-                </div>
-                <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
-                  How respectful and supportive is your partner towards your decisions and boundaries?
-                </h2>
-                {renderChips(optionsQ6, qn61, setQn61, 6)}
+          {/* QUESTION 61 (CONDITIONAL) */}
+          {qn60 === "Yes" && (
+            <div 
+              className={`w-full bg-white rounded-[16px] p-6 md:p-7 transition-all duration-200 cursor-default border-[1.5px] border-[#1B9DC8] shadow-[0_0_0_4px_rgba(27,157,200,0.12)]`}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <span className="bg-[#D6F0F8] text-[#1B9DC8] font-bold text-[11px] px-[10px] py-[3px] rounded-[20px]">Q6</span>
               </div>
+              <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4">How supportive do you find these groups?</h2>
+              {renderChips(optionsQ6, qn61, 'qn61', 6)}
             </div>
-          </div>
-
-          {/* 6. SUPPORT RESOURCE STRIP */}
-          <div className="w-full mt-2 bg-[#FFF8F0] border border-[#F0C06A] rounded-[12px] p-[14px_18px] flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
-            <div className="flex items-start md:items-center gap-3">
-              <PhoneIcon className="text-[#F0A500] shrink-0 mt-[2px] md:mt-0" />
-              <div className="flex flex-col">
-                <span className="font-semibold text-[13px] text-[#1A1A2E]">Need to talk to someone?</span>
-                <span className="font-normal text-[12px] text-[#5A6473]">Uganda crisis line: 0800 111 000 (free, 24/7)</span>
-              </div>
-            </div>
-            <a href="#" className="font-medium text-[12px] text-[#1B9DC8] hover:underline whitespace-nowrap self-start md:self-auto ml-[32px] md:ml-0">
-              More resources &rarr;
-            </a>
-          </div>
+          )}
 
         </div>
       </section>
@@ -395,7 +271,7 @@ export default function QuestionnairePage2() {
       {/* FIXED BOTTOM SECTION */}
       <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col">
         
-        {/* 8. PRIVACY REMINDER STRIP */}
+        {/* PRIVACY REMINDER */}
         <div className="w-full bg-[#D6F0F8] py-2.5 px-6 flex justify-center items-center gap-2">
           <LockIcon className="text-[#126E8E]" />
           <span className="font-normal text-[12px] text-[#126E8E] text-center">
@@ -403,20 +279,23 @@ export default function QuestionnairePage2() {
           </span>
         </div>
 
-        {/* 7. BOTTOM NAVIGATION BAR */}
+        {/* BOTTOM NAVIGATION BAR */}
         <div className="w-full bg-white h-[72px] px-6 border-t border-[#DDE4EA] shadow-[0_-2px_12px_rgba(0,0,0,0.06)] flex items-center justify-between">
           <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
             
-            {/* Back Button (Active) */}
-            <button className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] transition-colors font-medium text-[15px] min-h-[44px] px-2 -ml-2">
+            {/* Back Button */}
+            <button 
+              onClick={handleBack}
+              className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] font-medium text-[15px] transition-colors min-h-[44px] px-2 -ml-2"
+            >
               <ArrowLeftIcon />
               <span>Back</span>
             </button>
 
             {/* Pagination Dots */}
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#2EAF7D]"></div> {/* Step 1: Visited */}
-              <div className="w-5 h-2 rounded-full bg-[#1B9DC8]"></div> {/* Step 2: Active */}
+              <div className="w-2 h-2 rounded-full bg-[#1B9DC8] opacity-50"></div>
+              <div className="w-5 h-2 rounded-full bg-[#1B9DC8]"></div>
               <div className="w-2 h-2 rounded-full bg-[#DDE4EA]"></div>
               <div className="w-2 h-2 rounded-full bg-[#DDE4EA]"></div>
               <div className="w-2 h-2 rounded-full bg-[#DDE4EA]"></div>

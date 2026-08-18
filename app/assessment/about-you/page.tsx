@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useHydratedAssessment } from '@/app/store/useHydratedStore'; // Make sure this path matches where you created the file
 
 // ============================================================================
 // SVG ICONS
@@ -45,12 +46,17 @@ const ArrowRightIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage1() {
-  // --- State for Answers ---
-  const [q1Year, setQ1Year] = useState<string>("");
-  const [q2Mood, setQ2Mood] = useState<string>("");
-  const [q3Stress, setQ3Stress] = useState<string>("");
+  const router = useRouter();
 
-  // --- State for UI ---
+  // --- Pull State from Global Store ---
+  const { answers, setAnswer, isHydrated } = useHydratedAssessment();
+
+  // Read current values (fallback to empty string if user hasn't answered yet)
+  const q1Year = answers['qn1'] || "";
+  const q2Mood = answers['qn7'] || "";
+  const q3Stress = answers['qn8'] || "";
+
+  // --- State for UI (kept local) ---
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [progressWidth, setProgressWidth] = useState<string>("0%");
 
@@ -80,11 +86,13 @@ export default function QuestionnairePage1() {
     "Less than half of the time", "Some of the time", "At no time"
   ];
 
-  const router = useRouter();
-
   const handleNext = () =>{
-    //logic
-    router.push('/assessment/safety-and-comfort')
+    router.push('/assessment/safety-and-comfort');
+  };
+
+  // Prevent hydration mismatch by not rendering the form until the client has loaded
+  if (!isHydrated) {
+    return null; // Or a simple loading state/spinner if you prefer
   }
 
   return (
@@ -93,13 +101,10 @@ export default function QuestionnairePage1() {
       {/* 1. TOP NAVIGATION BAR */}
       <nav className="w-full bg-white border-b border-[#DDE4EA] h-[56px] md:h-[64px] flex items-center px-6 sticky top-0 z-40">
         <div className="max-w-[1200px] mx-auto w-full flex justify-between items-center">
-          {/* Logo */}
           <div className="flex flex-col w-[120px] cursor-pointer">
             <span className="text-[#1B9DC8] font-bold text-lg leading-none">HSH</span>
             <span className="text-[#1A1A2E] text-[10px] mt-[2px] leading-tight">Hope Springs Health</span>
           </div>
-          
-          {/* Save & Exit */}
           <button className="border border-[#E05C3A] text-[#E05C3A] hover:bg-[#E05C3A]/5 transition-colors rounded-lg px-4 min-h-[44px] flex items-center justify-center text-sm font-medium">
             Save & Exit
           </button>
@@ -109,21 +114,16 @@ export default function QuestionnairePage1() {
       {/* 2. PROGRESS BAR */}
       <section className="w-full bg-white px-6 py-4 border-b border-[#DDE4EA]">
         <div className="max-w-[680px] mx-auto w-full">
-          {/* Row 1: Labels */}
           <div className="flex justify-between items-end mb-2">
             <span className="font-medium text-[13px] text-[#5A6473]">Step 1 of 6</span>
             <span className="font-semibold text-[14px] text-[#1B9DC8]">About You</span>
           </div>
-          
-          {/* Row 2: Visual Track */}
           <div className="w-full h-[6px] bg-[#DDE4EA] rounded-full overflow-hidden mb-2">
             <div 
               className="h-full bg-[#1B9DC8] rounded-full transition-all duration-300 ease-in-out"
               style={{ width: progressWidth }}
             ></div>
           </div>
-          
-          {/* Counter */}
           <div className="text-right font-normal text-[12px] text-[#5A6473]">
             3 questions
           </div>
@@ -171,7 +171,7 @@ export default function QuestionnairePage1() {
                 type="number"
                 placeholder="e.g. 2005"
                 value={q1Year}
-                onChange={(e) => setQ1Year(e.target.value)}
+                onChange={(e) => setAnswer('qn1', e.target.value)} // Write directly to global store
                 onFocus={() => setActiveCard(1)}
                 className="w-full md:w-[180px] h-[48px] px-4 border-[1.5px] border-[#DDE4EA] rounded-[10px] font-normal text-[16px] text-[#1A1A2E] outline-none focus:border-[#1B9DC8] transition-colors placeholder:text-[#5A6473]/50"
               />
@@ -204,7 +204,7 @@ export default function QuestionnairePage1() {
                 return (
                   <button
                     key={option}
-                    onClick={() => { setQ2Mood(option); setActiveCard(2); }}
+                    onClick={() => { setAnswer('qn7', option); setActiveCard(2); }} // Write to store
                     className={`
                       flex items-center gap-2 px-5 py-2.5 rounded-[24px] border-[1.5px] transition-all duration-150
                       ${isSelected 
@@ -246,7 +246,7 @@ export default function QuestionnairePage1() {
                 return (
                   <button
                     key={option}
-                    onClick={() => { setQ3Stress(option); setActiveCard(3); }}
+                    onClick={() => { setAnswer('qn8', option); setActiveCard(3); }} // Write to store
                     className={`
                       flex items-center gap-2 px-5 py-2.5 rounded-[24px] border-[1.5px] transition-all duration-150
                       ${isSelected 

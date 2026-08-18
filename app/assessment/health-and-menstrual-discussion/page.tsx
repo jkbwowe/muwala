@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import { useHydratedAssessment } from "@/app/store/useHydratedStore";
 
 // ============================================================================
 // SVG ICONS
@@ -153,14 +154,18 @@ const ArrowRightIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage5() {
-  // --- State for Answers ---
+  const router = useRouter();
+
+  // --- Global Store State ---
+  const { answers, setAnswer, isHydrated } = useHydratedAssessment();
+
   // Developer Note: qn20 answers both qn20 and qn36. qn36 is hidden.
-  const [qn20, setQn20] = useState<string>("");
-  const [qn21, setQn21] = useState<string>("");
-  const [qn55, setQn55] = useState<string>("");
-  const [qn56, setQn56] = useState<string>("");
-  const [qn57, setQn57] = useState<string>("");
-  const [qn58, setQn58] = useState<string>("");
+  const qn20 = answers["qn20"] || "";
+  const qn21 = answers["qn21"] || "";
+  const qn55 = answers["qn55"] || "";
+  const qn56 = answers["qn56"] || "";
+  const qn57 = answers["qn57"] || "";
+  const qn58 = answers["qn58"] || "";
 
   // --- State for UI ---
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -199,14 +204,14 @@ export default function QuestionnairePage5() {
   const renderChips = (
     options: string[],
     currentValue: string,
-    setValue: (val: string) => void,
+    questionKey: string,
     cardNumber: number,
     theme: "blue" | "green"
   ) => {
     const isBlue = theme === "blue";
 
     return (
-      <div className="flex flex-wrap gap-x-2 gap-y-3 mt-2">
+      <div className="flex flex-wrap gap-x-2 gap-y-3 mt-2" role="radiogroup">
         {options.map((option) => {
           const isSelected = currentValue === option;
 
@@ -220,8 +225,10 @@ export default function QuestionnairePage5() {
             <button
               key={option}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => {
-                setValue(option);
+                setAnswer(questionKey, option);
                 setActiveCard(cardNumber);
               }}
               className={`
@@ -252,11 +259,11 @@ export default function QuestionnairePage5() {
   const renderRadioListGreen = (
     options: string[],
     currentValue: string,
-    setValue: (val: string) => void,
+    questionKey: string,
     cardNumber: number
   ) => {
     return (
-      <div className="flex flex-col gap-2 mt-2 w-full">
+      <div className="flex flex-col gap-2 mt-2 w-full" role="radiogroup">
         {options.map((option) => {
           const isSelected = currentValue === option;
 
@@ -264,8 +271,10 @@ export default function QuestionnairePage5() {
             <button
               key={option}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => {
-                setValue(option);
+                setAnswer(questionKey, option);
                 setActiveCard(cardNumber);
               }}
               className={`
@@ -302,12 +311,14 @@ export default function QuestionnairePage5() {
     );
   };
 
-  const router = useRouter();
-    
-  const handleNext = () =>{
+  const handleNext = () => {
     //logic
     router.push('/assessment/your-future-and-coping')
   }
+
+  // Prevent hydration errors
+  if (!isHydrated) return null;
+
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[140px]">
       {/* 1. TOP NAVIGATION BAR */}
@@ -395,7 +406,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               How often do you discuss sexual health and contraception with a healthcare provider or a trusted adult?
             </h2>
-            {renderChips(optionsOften, qn20, setQn20, 1, "blue")}
+            {renderChips(optionsOften, qn20, "qn20", 1, "blue")}
           </div>
 
           {/* Q2 (qn21) */}
@@ -415,7 +426,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               Do you discuss sexual health and contraception with your friends and peers?
             </h2>
-            {renderChips(optionsFriends, qn21, setQn21, 2, "blue")}
+            {renderChips(optionsFriends, qn21, "qn21", 2, "blue")}
           </div>
 
           {/* ==============================================================
@@ -458,7 +469,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               Are you aware of your reproductive health and menstrual cycle?
             </h2>
-            {renderChips(optionsAware, qn55, setQn55, 3, "green")}
+            {renderChips(optionsAware, qn55, "qn55", 3, "green")}
           </div>
 
           {/* Q4 (qn56) */}
@@ -478,7 +489,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               How often do you discuss menstrual health management with a healthcare provider or a trusted adult?
             </h2>
-            {renderChips(optionsOften, qn56, setQn56, 4, "green")}
+            {renderChips(optionsOften, qn56, "qn56", 4, "green")}
           </div>
 
           {/* Q5 (qn57) */}
@@ -498,7 +509,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               Do you discuss menstrual health management with your friends and peers?
             </h2>
-            {renderChips(optionsFriends, qn57, setQn57, 5, "green")}
+            {renderChips(optionsFriends, qn57, "qn57", 5, "green")}
           </div>
 
           {/* Q6 (qn58) */}
@@ -518,7 +529,7 @@ export default function QuestionnairePage5() {
             <h2 className="font-semibold text-[16px] text-[#1A1A2E] mb-4 leading-snug">
               Does your community or school provide access to information on menstrual health management?
             </h2>
-            {renderRadioListGreen(optionsAccess, qn58, setQn58, 6)}
+            {renderRadioListGreen(optionsAccess, qn58, "qn58", 6)}
           </div>
 
           {/* ==============================================================
@@ -558,6 +569,7 @@ export default function QuestionnairePage5() {
             {/* Back Button */}
             <button
               type="button"
+              onClick={() => router.back()}
               className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] transition-colors font-medium text-[15px] min-h-[44px] px-2 -ml-2 cursor-pointer"
             >
               <ArrowLeftIcon />

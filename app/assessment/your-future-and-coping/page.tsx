@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useHydratedAssessment } from "@/app/store/useHydratedStore";
 
 // ============================================================================
 // SVG ICONS
@@ -191,10 +192,15 @@ const ShieldIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage6() {
-  // --- State for Answers ---
-  const [qn22, setQn22] = useState<string[]>([]); // Multi-select
-  const [qn64, setQn64] = useState<string>("");
-  const [qn68, setQn68] = useState<string>("");
+  const router = useRouter();
+
+  // --- Global Store State ---
+  const { answers, setAnswer, isHydrated } = useHydratedAssessment();
+
+  // Extract answers from store (fallback to appropriate defaults)
+  const qn22 = (answers["qn22"] as string[]) || []; // Multi-select array
+  const qn64 = (answers["qn64"] as string) || "";
+  const qn68 = (answers["qn68"] as string) || "";
 
   // --- State for UI ---
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -214,16 +220,14 @@ export default function QuestionnairePage6() {
   const isAllAnswered = qn22.length > 0 && qn64 !== "" && qn68 !== "";
 
   // Handle Form Submission
-  const router = useRouter();
   const handleSubmit = () => {
     if (!isAllAnswered || isSubmitting) return;
     setIsSubmitting(true);
     
     // Simulate API call and model payload construction
-    // Dev note: qn22 answer string would be: qn22.join(" ")
     setTimeout(() => {
       // navigation to results page
-      router.push('/assessment/results')
+      router.push('/assessment/results');
     }, 1800);
   };
 
@@ -253,15 +257,18 @@ export default function QuestionnairePage6() {
 
   // --- Helpers ---
   const toggleMultiSelect = (option: string) => {
-    setQn22((prev) => {
-      if (prev.includes(option)) {
-        return prev.filter((item) => item !== option);
-      } else {
-        return [...prev, option];
-      }
-    });
+    let updated;
+    if (qn22.includes(option)) {
+      updated = qn22.filter((item) => item !== option);
+    } else {
+      updated = [...qn22, option];
+    }
+    setAnswer("qn22", updated);
     setActiveCard(1);
   };
+
+  // Prevent hydration errors
+  if (!isHydrated) return null;
 
   return (
     <main className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col pb-[160px]">
@@ -352,7 +359,7 @@ export default function QuestionnairePage6() {
               Select all that apply
             </p>
             
-            <div className="flex flex-wrap gap-x-2 gap-y-3">
+            <div className="flex flex-wrap gap-x-2 gap-y-3" role="group">
               {optionsEntertainment.map((option) => {
                 const isSelected = qn22.includes(option);
                 return (
@@ -401,15 +408,17 @@ export default function QuestionnairePage6() {
               Are you aware of healthy coping mechanisms?
             </h2>
             
-            <div className="flex flex-wrap gap-x-2 gap-y-3">
+            <div className="flex flex-wrap gap-x-2 gap-y-3" role="radiogroup">
               {optionsAware.map((option) => {
                 const isSelected = qn64 === option;
                 return (
                   <button
                     key={option}
                     type="button"
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => {
-                      setQn64(option);
+                      setAnswer("qn64", option);
                       setActiveCard(2);
                     }}
                     className={`
@@ -460,15 +469,17 @@ export default function QuestionnairePage6() {
               How do you think your current choices and relationships may impact your future goals?
             </h2>
             
-            <div className="flex flex-col gap-2 mt-2 w-full">
+            <div className="flex flex-col gap-2 mt-2 w-full" role="radiogroup">
               {optionsFuture.map((option) => {
                 const isSelected = qn68 === option;
                 return (
                   <button
                     key={option}
                     type="button"
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => {
-                      setQn68(option);
+                      setAnswer("qn68", option);
                       setActiveCard(3);
                     }}
                     className={`
@@ -577,6 +588,7 @@ export default function QuestionnairePage6() {
           <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
             {/* Back Button */}
             <button
+              onClick={() => router.back()}
               type="button"
               className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] transition-colors font-medium text-[15px] min-h-[44px] px-2 -ml-2 cursor-pointer"
             >
