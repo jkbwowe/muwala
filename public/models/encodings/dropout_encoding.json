@@ -1,0 +1,167 @@
+{
+  "qn_list": [
+    "qn8",
+    "qn9",
+    "qn11",
+    "qn12",
+    "qn13",
+    "qn14",
+    "qn15",
+    "qn17",
+    "qn20",
+    "qn22",
+    "qn32",
+    "qn35",
+    "qn60",
+    "qn61",
+    "qn64",
+    "qn68"
+  ],
+  "numeric_qns": [],
+  "cat_qns": [
+    "qn8",
+    "qn9",
+    "qn11",
+    "qn12",
+    "qn13",
+    "qn14",
+    "qn15",
+    "qn17",
+    "qn20",
+    "qn22",
+    "qn32",
+    "qn35",
+    "qn60",
+    "qn61",
+    "qn64",
+    "qn68"
+  ],
+  "categories": {
+    "qn8": [
+      "All of the time ",
+      "At no time ",
+      "Less than half of the time",
+      "More than half of the time ",
+      "Most of the time ",
+      "Some of the time"
+    ],
+    "qn9": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn11": [
+      "Moderatly knowledgeable",
+      "Not knowledgeable at all",
+      "Somewhat knowledgable",
+      "Very knowledgeable"
+    ],
+    "qn12": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn13": [
+      "No",
+      "Yes"
+    ],
+    "qn14": [
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn15": [
+      "Extremely aware",
+      "Moderately aware",
+      "Not aware",
+      "Somewhat aware",
+      "Very aware"
+    ],
+    "qn17": [
+      "No",
+      "Yes"
+    ],
+    "qn20": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn22": [
+      "Other",
+      "Read books",
+      "Read books Share and listen to stories",
+      "Read newspapers and magazines Read books Share and listen to stories",
+      "Read newspapers and magazines Watch TV",
+      "Share and listen to stories",
+      "Social media",
+      "Social media Watch TV Read books",
+      "Watch TV",
+      "Watch TV Read books Share and listen to stories",
+      "Watch TV Read newspapers and magazines Read books Share and listen to stories"
+    ],
+    "qn32": [
+      "No",
+      "Somehow",
+      "Yes"
+    ],
+    "qn35": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn60": [
+      "No",
+      "Yes"
+    ],
+    "qn61": [
+      "Extremely respectful/supportive",
+      "Moderately respectful/supportive",
+      "Somewhat respectful/supportive",
+      "Very respectful/supportive"
+    ],
+    "qn64": [
+      "No",
+      "Yes"
+    ],
+    "qn68": [
+      " I'm not sure: I haven't fully considered the impact of my choices and relationships on my future goals yet.",
+      "Negatively: My current choices and relationships may hinder or divert me from achieving my future goals.",
+      "Positively: My current choices and relationships support and align with my future aspirations."
+    ]
+  },
+  "target_classes": [
+    "Inschool",
+    "Out of school"
+  ],
+  "qn_to_question": {
+    "qn8": "Are you currently facing any stressors or challenges in your life?",
+    "qn9": "Do you feel uncomfortable  saying \"no\" in uncomfortable situations, such as peer pressure or advances from others?",
+    "qn11": "How knowledgeable do you feel about topics related to sexual health, contraception, and pregnancy prevention?",
+    "qn12": "Have you received any sexual education at school or through other sources?",
+    "qn13": "Do you have access to reproductive health services and information in your community?",
+    "qn14": "Have you ever experienced pressure or coercion to engage in sexual activity?",
+    "qn15": "Are you aware of the risks and consequences associated with teenage pregnancy, including health risks and social challenges?",
+    "qn17": "Are you still a virgin?",
+    "qn20": "How often do you discuss sexual health and contraception with a healthcare provider or trusted adult?",
+    "qn22": "What are some of your favorite ways to stay informed or entertained in your free time?",
+    "qn32": "Are you aware of the risks associated with dating much older individuals (sugar daddies)?",
+    "qn35": "How does this influence your own choices?",
+    "qn60": "Are you currently in a romantic relationship?",
+    "qn61": "How respectful and supportive is your partner towards your decisions and boundaries?",
+    "qn64": "Are you aware of healthy coping mechanisms?",
+    "qn68": "How do you think your current choices and relationships may impact your future goals?"
+  }
+}

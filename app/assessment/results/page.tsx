@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAssessmentStore } from "@/app/store/assessmentStore";
+import { runAllModels, mapToRiskStatus } from "@/app/lib/predict";
 
 // ============================================================================
 // ICONS
@@ -165,12 +167,6 @@ interface RiskCardData {
   type: ModelType;
   status: RiskStatus;
 }
-
-const mockResults: RiskCardData[] = [
-  { id: "1", type: "DROPOUT", status: "LOW" },
-  { id: "2", type: "PREGNANCY", status: "HIGH" },
-  { id: "3", type: "EXPOSURE", status: "LOW" },
-];
 
 // Content definitions based on spec
 const CONTENT = {
@@ -414,12 +410,20 @@ const RiskCard = ({
   );
 };
 
+// ============================================================================
+// MAIN PAGE
+// ============================================================================
 export default function ResultsPage() {
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const [drawCheck, setDrawCheck] = useState(false);
+  const router     = useRouter();
+  const { answers } = useAssessmentStore();
 
-  // Today's date formatted
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [mounted,      setMounted]      = useState(false);
+  const [drawCheck,    setDrawCheck]    = useState(false);
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState<string | null>(null);
+  const [results,      setResults]      = useState<RiskCardData[]>([]);
+
   const today = new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
@@ -428,22 +432,100 @@ export default function ResultsPage() {
 
   useEffect(() => {
     setMounted(true);
-    // Delay drawing the checkmark stroke slightly after mount
     const timer = setTimeout(() => setDrawCheck(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
+  // Run models on mount
+  useEffect(() => {
+    async function predict() {
+      try {
+        setLoading(true);
+
+        const predictions = await runAllModels(answers);
+        const { dropoutStatus, pregnancyStatus, exposureStatus } =
+          mapToRiskStatus(
+            predictions.dropout,
+            predictions.pregnancy,
+            predictions.sugardaddy
+          );
+
+        setResults([
+          { id: "1", type: "DROPOUT",   status: dropoutStatus   },
+          { id: "2", type: "PREGNANCY", status: pregnancyStatus },
+          { id: "3", type: "EXPOSURE",  status: exposureStatus  },
+        ]);
+      } catch (err) {
+        console.error("Prediction error:", err);
+        setError(
+          "Could not generate your results. Please check your connection and try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+    predict();
+  }, [answers]);
+
   const handleToggle = (id: string) => {
-    // Scroll handling can be added here if needed, 
-    // but the spec suggests it opens and pushes content down smoothly.
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  const router = useRouter();
-
   const handleStartNewAssessment = () => {
-    router.push('/assessment/about-you')
+    router.push("/assessment/about-you");
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F4F8FB] flex flex-col items-center justify-center gap-4">
+        <div className="w-12 h-12 border-4 border-[#1B9DC8] border-t-transparent rounded-full animate-spin" />
+        <p className="font-medium text-[#5A6473]">
+          Generating your report...
+        </p>
+      </div>
+    );
   }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#F4F8FB] flex items-center justify-center p-6">
+        <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center border border-[#DDE4EA] shadow-sm">
+          <p className="text-[#E05C3A] font-semibold text-[16px] mb-2">
+            Something went wrong
+          </p>
+          <p className="text-[#5A6473] text-[14px] mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#1B9DC8] text-white font-semibold px-6 py-3 rounded-[10px] hover:bg-[#126E8E] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Derive summary badge values from results
+  const dropoutResult    = results.find((r) => r.type === "DROPOUT");
+  const pregnancyResult  = results.find((r) => r.type === "PREGNANCY");
+  const exposureResult   = results.find((r) => r.type === "EXPOSURE");
+
+  const summaryBadge = {
+    dropout: {
+      label:  dropoutResult?.status === "LOW" ? "Inschool"    : "At Risk",
+      color:  dropoutResult?.status === "LOW" ? "#2EAF7D"      : "#E05C3A",
+    },
+    pregnancy: {
+      label:  pregnancyResult?.status === "LOW" ? "No Risk"   : "At Risk",
+      color:  pregnancyResult?.status === "LOW" ? "#2EAF7D"   : "#E05C3A",
+    },
+    exposure: {
+      label:  exposureResult?.status === "LOW" ? "No Exposure" : "Exposed",
+      color:  exposureResult?.status === "LOW" ? "#2EAF7D"     : "#E05C3A",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F8FB] font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col">
@@ -478,7 +560,10 @@ export default function ResultsPage() {
             </span>
           </div>
           {/* Start Over Button */}
-          <button className="border border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] transition-colors rounded-lg px-4 min-h-[44px] flex items-center justify-center text-sm font-medium cursor-pointer">
+          <button 
+            onClick={handleStartNewAssessment}
+            className="border border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] transition-colors rounded-lg px-4 min-h-[44px] flex items-center justify-center text-sm font-medium cursor-pointer"
+          >
             Start Over
           </button>
         </div>
@@ -513,27 +598,48 @@ export default function ResultsPage() {
             
             {/* Column 1: Dropout */}
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-3 h-3 rounded-full bg-[#2EAF7D] mb-2"></div>
-              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1">Inschool</span>
-              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase">DROPOUT</span>
+              <div 
+                className="w-3 h-3 rounded-full mb-2" 
+                style={{ backgroundColor: summaryBadge.dropout.color }}
+              ></div>
+              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1">
+                {summaryBadge.dropout.label}
+              </span>
+              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase">
+                DROPOUT
+              </span>
             </div>
 
             <div className="w-[1px] bg-[#DDE4EA] mx-1 md:mx-4"></div>
 
             {/* Column 2: Pregnancy */}
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-3 h-3 rounded-full bg-[#E05C3A] mb-2"></div>
-              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1">At Risk</span>
-              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase">PREGNANCY</span>
+              <div 
+                className="w-3 h-3 rounded-full mb-2" 
+                style={{ backgroundColor: summaryBadge.pregnancy.color }}
+              ></div>
+              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1">
+                {summaryBadge.pregnancy.label}
+              </span>
+              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase">
+                PREGNANCY
+              </span>
             </div>
 
             <div className="w-[1px] bg-[#DDE4EA] mx-1 md:mx-4"></div>
 
             {/* Column 3: Exposure */}
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-3 h-3 rounded-full bg-[#2EAF7D] mb-2"></div>
-              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1 leading-tight md:leading-normal">No Exposure</span>
-              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase text-center w-full">OLDER EXPOSURE</span>
+              <div 
+                className="w-3 h-3 rounded-full mb-2" 
+                style={{ backgroundColor: summaryBadge.exposure.color }}
+              ></div>
+              <span className="font-bold text-[14px] text-[#1A1A2E] mb-1 leading-tight md:leading-normal">
+                {summaryBadge.exposure.label}
+              </span>
+              <span className="font-normal text-[11px] text-[#5A6473] tracking-[0.04em] uppercase text-center w-full">
+                OLDER EXPOSURE
+              </span>
             </div>
 
           </div>
@@ -553,7 +659,7 @@ export default function ResultsPage() {
       {/* 5. THREE RISK CARDS */}
       <section className="w-full px-5 md:px-6 pb-6 flex justify-center">
         <div className="w-full max-w-[680px] flex flex-col gap-[16px]">
-          {mockResults.map((result, idx) => (
+          {results.map((result, idx) => (
             <div 
               key={result.id} 
               className={`transition-all duration-500 ease-out fill-mode-forwards opacity-0 translate-y-5`}

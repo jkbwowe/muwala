@@ -1,0 +1,261 @@
+{
+  "qn_list": [
+    "qn1",
+    "qn7",
+    "qn8",
+    "qn9",
+    "qn10",
+    "qn11",
+    "qn12",
+    "qn13",
+    "qn14",
+    "qn15",
+    "qn19",
+    "qn20",
+    "qn21",
+    "qn22",
+    "qn32",
+    "qn34",
+    "qn35",
+    "qn36",
+    "qn37",
+    "qn55",
+    "qn56",
+    "qn57",
+    "qn58",
+    "qn61",
+    "qn68"
+  ],
+  "numeric_qns": [
+    "qn1"
+  ],
+  "cat_qns": [
+    "qn7",
+    "qn8",
+    "qn9",
+    "qn10",
+    "qn11",
+    "qn12",
+    "qn13",
+    "qn14",
+    "qn15",
+    "qn19",
+    "qn20",
+    "qn21",
+    "qn22",
+    "qn32",
+    "qn34",
+    "qn35",
+    "qn36",
+    "qn37",
+    "qn55",
+    "qn56",
+    "qn57",
+    "qn58",
+    "qn61",
+    "qn68"
+  ],
+  "categories": {
+    "qn7": [
+      "Extremely distressed and unable to cope",
+      "Feeling overwhelmed and distressed",
+      "Generally positive, but with occasional ups and downs",
+      "Happy and content",
+      "Neutral, neither particularly happy nor sad",
+      "Struggling with some negative emotions"
+    ],
+    "qn8": [
+      "All of the time ",
+      "At no time ",
+      "Less than half of the time",
+      "More than half of the time ",
+      "Most of the time ",
+      "Some of the time"
+    ],
+    "qn9": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn10": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn11": [
+      "Moderatly knowledgeable",
+      "Not knowledgeable at all",
+      "Somewhat knowledgable",
+      "Very knowledgeable"
+    ],
+    "qn12": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn13": [
+      "No",
+      "Yes"
+    ],
+    "qn14": [
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn15": [
+      "Extremely aware",
+      "Moderately aware",
+      "Not aware",
+      "Somewhat aware",
+      "Very aware"
+    ],
+    "qn19": [
+      "No",
+      "Yes"
+    ],
+    "qn20": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn21": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn22": [
+      "Other",
+      "Read books",
+      "Read books Share and listen to stories",
+      "Read newspapers and magazines Read books Share and listen to stories",
+      "Read newspapers and magazines Watch TV",
+      "Share and listen to stories",
+      "Social media",
+      "Social media Watch TV Read books",
+      "Watch TV",
+      "Watch TV Read books Share and listen to stories",
+      "Watch TV Read newspapers and magazines Read books Share and listen to stories"
+    ],
+    "qn32": [
+      "No",
+      "Somehow",
+      "Yes"
+    ],
+    "qn34": [
+      "No",
+      "Yes"
+    ],
+    "qn35": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn36": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn37": [
+      "Neutral - I don't have strong feelings about getting pregnant while young; it depends on the individual's situation.",
+      "Somewhat negative - I think getting pregnant while young is generally not a good idea, but there might be exceptions or circumstances where it's manageable.",
+      "Somewhat positive - I see some potential positives in getting pregnant while young, such as starting a family early, but I also recognize the challenges.",
+      "Strongly negative - I believe getting pregnant while young is highly undesirable and can have serious negative consequences.",
+      "Strongly positive - I believe getting pregnant while young can be a positive experience, providing opportunities for growth and development.Option 5"
+    ],
+    "qn55": [
+      "Extremely aware - I have a comprehensive understanding of my reproductive health and menstrual cycle, and I am confident in managing them effectively",
+      "Moderately aware - I have a decent understanding of my reproductive health and menstrual cycle, but I could learn more.",
+      "Not aware at all - I have little to no knowledge about my reproductive health and menstrual cycle.",
+      "Somewhat aware - I have some basic understanding of my reproductive health and menstrual cycle, but there are gaps in my knowledge.",
+      "Very aware - I am well-informed about my reproductive health and menstrual cycle, and I actively seek information to understand them better."
+    ],
+    "qn56": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn57": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn58": [
+      "All of the time",
+      "At no time",
+      "Less than half of the time",
+      "More than half of the time",
+      "Most of the time",
+      "Some of the time"
+    ],
+    "qn61": [
+      "Extremely respectful/supportive",
+      "Moderately respectful/supportive",
+      "Somewhat respectful/supportive",
+      "Very respectful/supportive"
+    ],
+    "qn68": [
+      " I'm not sure: I haven't fully considered the impact of my choices and relationships on my future goals yet.",
+      "Negatively: My current choices and relationships may hinder or divert me from achieving my future goals.",
+      "Positively: My current choices and relationships support and align with my future aspirations."
+    ]
+  },
+  "target_classes": [
+    "Any exposure",
+    "No exposure"
+  ],
+  "qn_to_question": {
+    "qn1": "In which year were you born ?",
+    "qn7": "How would you describe your overall mood and emotional well-being on a daily basis?",
+    "qn8": "Are you currently facing any stressors or challenges in your life?",
+    "qn9": "Do you feel uncomfortable  saying \"no\" in uncomfortable situations, such as peer pressure or advances from others?",
+    "qn10": "Have you ever felt pressured into engaging in activities you were not comfortable with?",
+    "qn11": "How knowledgeable do you feel about topics related to sexual health, contraception, and pregnancy prevention?",
+    "qn12": "Have you received any sexual education at school or through other sources?",
+    "qn13": "Do you have access to reproductive health services and information in your community?",
+    "qn14": "Have you ever experienced pressure or coercion to engage in sexual activity?",
+    "qn15": "Are you aware of the risks and consequences associated with teenage pregnancy, including health risks and social challenges?",
+    "qn19": "If no, Are you currently using any form of contraception or protection during sexual activity?",
+    "qn20": "How often do you discuss sexual health and contraception with a healthcare provider or trusted adult?",
+    "qn21": "Do you discuss sexual health and contraception  with your friends and peers?",
+    "qn22": "What are some of your favorite ways to stay informed or entertained in your free time?",
+    "qn32": "Are you aware of the risks associated with dating much older individuals (sugar daddies)?",
+    "qn34": "Do you have friends or peers who engage in risky behaviors?",
+    "qn35": "How does this influence your own choices?",
+    "qn36": "How often do you discuss sexual health and contraception with a healthcare provider or trusted adult?.1",
+    "qn37": "What is your view on pregnancy while young?",
+    "qn55": "Are you aware of your reproductive health and menstrual cycle?",
+    "qn56": "How often do you discuss menstrual health management with a healthcare provider or trusted adult?",
+    "qn57": "Do you discuss menstrual health management with your friends and peers?",
+    "qn58": "Does your community or school provide access to information on menstrual health management?",
+    "qn61": "How respectful and supportive is your partner towards your decisions and boundaries?",
+    "qn68": "How do you think your current choices and relationships may impact your future goals?"
+  }
+}

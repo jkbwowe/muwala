@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
+import { useEffect } from 'react';
 
 // ============================================================================
 // SVG ICONS
@@ -61,6 +62,31 @@ export default function MuwalaLandingPage() {
     router.push('/assessment/about-you')
   }
 
+  // app/page.tsx — add this useEffect
+
+useEffect(() => {
+  // Pre-fetch all files needed for offline results page
+  const filesToCache = [
+    // ONNX models
+    '/models/onnx/dropout_model.onnx',
+    '/models/onnx/pregnancy_model.onnx',
+    '/models/onnx/sugardaddy_model.onnx',
+    // Encoding JSONs
+    '/models/encodings/dropout_encoding.json',
+    '/models/encodings/pregnancy_encoding.json',
+    '/models/encodings/sugardaddy_encoding.json',
+    // WASM runtime files
+    '/onnx/ort-wasm-simd-threaded.wasm',
+    '/onnx/ort-wasm-simd-threaded.jsep.wasm',
+    '/onnx/ort-wasm-simd-threaded.mjs',
+  ]
+
+  filesToCache.forEach((url) => {
+    fetch(url, { cache: 'force-cache' }).catch(() => {
+      // Silently fail — user is offline on first load
+    })
+  })
+}, [])
   return (
     <main className="min-h-screen font-sans selection:bg-[#1B9DC8] selection:text-white flex flex-col">
       

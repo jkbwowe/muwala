@@ -198,9 +198,11 @@ export default function QuestionnairePage6() {
   const { answers, setAnswer, isHydrated } = useHydratedAssessment();
 
   // Extract answers from store (fallback to appropriate defaults)
-  const qn22 = (answers["qn22"] as string[]) || []; // Multi-select array
-  const qn64 = (answers["qn64"] as string) || "";
-  const qn68 = (answers["qn68"] as string) || "";
+  // READ from store — split string back to array for UI
+  const qn22Raw = answers["qn22"] || ""
+  const qn22    = qn22Raw ? qn22Raw.split(" | ") : []  // array for UI logic
+  const qn64    = answers["qn64"] || ""
+  const qn68    = answers["qn68"] || ""
 
   // --- State for UI ---
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -256,16 +258,18 @@ export default function QuestionnairePage6() {
   ];
 
   // --- Helpers ---
+  // WRITE to store — join array to string before saving
   const toggleMultiSelect = (option: string) => {
-    let updated;
+    let updated: string[]
     if (qn22.includes(option)) {
-      updated = qn22.filter((item) => item !== option);
+      updated = qn22.filter((item) => item !== option)
     } else {
-      updated = [...qn22, option];
+      updated = [...qn22, option]
     }
-    setAnswer("qn22", updated);
-    setActiveCard(1);
-  };
+    // join with " | " separator for storage
+    setAnswer("qn22", updated.join(" | "))
+    setActiveCard(1)
+  }
 
   // Prevent hydration errors
   if (!isHydrated) return null;
