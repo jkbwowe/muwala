@@ -685,7 +685,7 @@ export default function ResultsPage() {
           </div>
           <h3 className="font-bold text-[20px] text-white mb-2.5">Remember</h3>
           <p className="font-normal text-[14px] text-white/90 leading-[1.7] max-w-[480px]">
-            This assessment is a tool to help you understand your situation — not a verdict. Your future is shaped by your choices, your support network, and the resources available to you. You are not alone.
+            This assessment is a tool to help you understand your situation. Your future is shaped by your choices, your support network, and the resources available to you. You are not alone.
           </p>
         </div>
       </section>
