@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 //import {useRouter} from 'next/navigation';
 import { useEffect } from 'react';
+import Image from "next/image";
 
 // ============================================================================
 // SVG ICONS
@@ -140,10 +141,15 @@ useEffect(() => {
 
           {/* Right Column - Illustration Placeholder */}
           <div className="w-full max-w-[280px] md:max-w-[480px] md:w-1/2 flex justify-center md:justify-end">
-            <div className="w-full aspect-square bg-[#1B9DC8]/10 rounded-full flex items-center justify-center border-2 border-dashed border-[#1B9DC8]/30">
-              <span className="text-[#1B9DC8] font-medium text-sm text-center px-4">
-                Warm African flat vector illustration <br />(Replace with Image)
-              </span>
+            <div className="w-full aspect-square relative rounded-full overflow-hidden">
+              <Image
+                src="/images/hero-illustration.png"
+                alt="Warm African flat vector illustration of young people"
+                fill
+                sizes="(max-width: 768px) 280px, 480px"
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
           
