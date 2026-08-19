@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { NextButton, BackButton, DisabledBackButton } from '@/app/components/NavButtons'
 import { useHydratedAssessment } from "@/app/store/useHydratedStore";
 
 // ============================================================================
@@ -154,7 +155,6 @@ const ArrowRightIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage5() {
-  const router = useRouter();
 
   // --- Global Store State ---
   const { answers, setAnswer, isHydrated } = useHydratedAssessment();
@@ -311,10 +311,7 @@ export default function QuestionnairePage5() {
     );
   };
 
-  const handleNext = () => {
-    //logic
-    router.push('/assessment/your-future-and-coping')
-  }
+
 
   // Prevent hydration errors
   if (!isHydrated) return null;
@@ -367,7 +364,7 @@ export default function QuestionnairePage5() {
             Health Discussions
           </h1>
           <p className="font-normal text-[16px] text-[#5A6473] max-w-[440px] leading-[1.6]">
-            How openly do you talk about health topics — and what do you know about your
+            How openly do you talk about health topics, and what do you know about your
             own body?
           </p>
         </div>
@@ -567,14 +564,8 @@ export default function QuestionnairePage5() {
         <div className="w-full bg-white h-[72px] px-6 border-t border-[#DDE4EA] shadow-[0_-2px_12px_rgba(0,0,0,0.06)] flex items-center justify-between">
           <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
             {/* Back Button */}
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] transition-colors font-medium text-[15px] min-h-[44px] px-2 -ml-2 cursor-pointer"
-            >
-              <ArrowLeftIcon />
-              <span>Back</span>
-            </button>
+            <BackButton href="/assessment/relationships-and-social-influence" />
+
 
             {/* Pagination Dots */}
             <div className="flex items-center gap-2">
@@ -587,22 +578,8 @@ export default function QuestionnairePage5() {
             </div>
 
             {/* Next Button */}
-            <button
-              onClick={handleNext}
-              type="button"
-              disabled={!isNextEnabled}
-              className={`
-                flex items-center gap-2 font-semibold text-[15px] px-7 py-3 rounded-[10px] min-h-[44px] transition-all duration-200
-                ${
-                  isNextEnabled
-                    ? "bg-[#1B9DC8] hover:bg-[#126E8E] text-white cursor-pointer shadow-sm"
-                    : "bg-[#DDE4EA] text-[#5A6473] cursor-not-allowed"
-                }
-              `}
-            >
-              <span>Next</span>
-              <ArrowRightIcon />
-            </button>
+            <NextButton href="/assessment/your-future-and-coping" enabled={isNextEnabled} />
+
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { NextButton, BackButton, DisabledBackButton } from '@/app/components/NavButtons'
 import { useHydratedAssessment } from '@/app/store/useHydratedStore';
 
 // ============================================================================
@@ -45,7 +45,6 @@ const ArrowRightIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage3() {
-  const router = useRouter();
 
   // --- Pull State from Global Store ---
   const { answers, setAnswer, isHydrated } = useHydratedAssessment();
@@ -133,13 +132,6 @@ export default function QuestionnairePage3() {
     );
   };
 
-  const handleNext = () => {
-    router.push('/assessment/relationships-and-social-influence');
-  };
-
-  const handleBack = () => {
-    router.push('/assessment/safety-and-comfort');
-  };
 
   // Prevent hydration mismatch
   if (!isHydrated) return null;
@@ -274,13 +266,8 @@ export default function QuestionnairePage3() {
           <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
             
             {/* Back Button */}
-            <button 
-              onClick={handleBack}
-              className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] font-medium text-[15px] transition-colors min-h-[44px] px-2 -ml-2"
-            >
-              <ArrowLeftIcon />
-              <span>Back</span>
-            </button>
+            <BackButton href="/assessment/safety-and-comfort" />
+
 
             {/* Pagination Dots */}
             <div className="flex items-center gap-2">
@@ -293,20 +280,7 @@ export default function QuestionnairePage3() {
             </div>
 
             {/* Next Button */}
-            <button 
-              onClick={handleNext}
-              disabled={!isNextEnabled}
-              className={`
-                flex items-center gap-2 font-semibold text-[15px] px-7 py-3 rounded-[10px] min-h-[44px] transition-all duration-200
-                ${isNextEnabled 
-                  ? 'bg-[#1B9DC8] hover:bg-[#126E8E] text-white cursor-pointer shadow-sm' 
-                  : 'bg-[#DDE4EA] text-[#5A6473] cursor-not-allowed'
-                }
-              `}
-            >
-              <span>Next</span>
-              <ArrowRightIcon />
-            </button>
+            <NextButton href="/assessment/relationships-and-social-influence" enabled={isNextEnabled} />
 
           </div>
         </div>

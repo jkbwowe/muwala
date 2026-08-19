@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAssessmentStore } from "@/app/store/assessmentStore";
 import { runAllModels, mapToRiskStatus } from "@/app/lib/predict";
 
@@ -414,7 +414,6 @@ const RiskCard = ({
 // MAIN PAGE
 // ============================================================================
 export default function ResultsPage() {
-  const router     = useRouter();
   const { answers } = useAssessmentStore();
 
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
@@ -471,9 +470,6 @@ export default function ResultsPage() {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
-  const handleStartNewAssessment = () => {
-    router.push("/assessment/about-you");
-  };
 
   // Loading state
   if (loading) {
@@ -560,12 +556,12 @@ export default function ResultsPage() {
             </span>
           </div>
           {/* Start Over Button */}
-          <button 
-            onClick={handleStartNewAssessment}
-            className="border border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] transition-colors rounded-lg px-4 min-h-[44px] flex items-center justify-center text-sm font-medium cursor-pointer"
+          <Link
+            href="/assessment/about-you"
+            className="border border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] transition-colors rounded-lg px-4 min-h-[44px] flex items-center justify-center text-sm font-medium"
           >
             Start Over
-          </button>
+          </Link>
         </div>
       </nav>
 
@@ -696,16 +692,13 @@ export default function ResultsPage() {
 
       {/* 7. ACTION BUTTONS ROW */}
       <section className="w-full px-5 md:px-6 py-6 pb-12 flex justify-center mt-auto">
-        <div className="w-full max-w-[680px] flex flex-col md:flex-row gap-3">
-          <button className="flex-1 bg-[#1B9DC8] hover:bg-[#126E8E] text-white font-semibold text-[15px] p-[16px] md:px-[24px] rounded-[10px] flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer">
-            <DownloadIcon className="w-[18px] h-[18px]" />
-            Save Results as PDF
-          </button>
-          <button
-            onClick={handleStartNewAssessment}
-          className="flex-1 bg-transparent border-[1.5px] border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] font-semibold text-[15px] p-[16px] md:px-[24px] rounded-[10px] flex items-center justify-center transition-colors cursor-pointer">
+        <div className="w-full max-w-[680px]">
+          <Link
+            href="/assessment/about-you"
+            className="w-full bg-transparent border-[1.5px] border-[#1B9DC8] text-[#1B9DC8] hover:bg-[#D6F0F8] font-semibold text-[15px] p-[16px] rounded-[10px] flex items-center justify-center transition-colors"
+          >
             Start a New Assessment
-          </button>
+          </Link>
         </div>
       </section>
 

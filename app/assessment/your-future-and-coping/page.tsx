@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import { NextButton, BackButton, DisabledBackButton } from '@/app/components/NavButtons'
+
 import { useHydratedAssessment } from "@/app/store/useHydratedStore";
 
 // ============================================================================
@@ -192,8 +194,7 @@ const ShieldIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function QuestionnairePage6() {
-  const router = useRouter();
-
+ 
   // --- Global Store State ---
   const { answers, setAnswer, isHydrated } = useHydratedAssessment();
 
@@ -229,7 +230,7 @@ export default function QuestionnairePage6() {
     // Simulate API call and model payload construction
     setTimeout(() => {
       // navigation to results page
-      router.push('/assessment/results');
+      window.location.href = '/assessment/results'
     }, 1800);
   };
 
@@ -591,14 +592,8 @@ export default function QuestionnairePage6() {
         <div className="w-full bg-white h-[72px] px-6 border-t border-[#DDE4EA] shadow-[0_-2px_12px_rgba(0,0,0,0.06)] flex items-center justify-between">
           <div className="max-w-[1200px] mx-auto w-full flex items-center justify-between">
             {/* Back Button */}
-            <button
-              onClick={() => router.back()}
-              type="button"
-              className="flex items-center gap-2 text-[#5A6473] hover:text-[#1A1A2E] transition-colors font-medium text-[15px] min-h-[44px] px-2 -ml-2 cursor-pointer"
-            >
-              <ArrowLeftIcon />
-              <span>Back</span>
-            </button>
+            <BackButton href="/assessment/health-and-menstrual-discussion" />
+
 
             {/* Pagination Dots */}
             <div className="flex items-center gap-2">
@@ -610,22 +605,23 @@ export default function QuestionnairePage6() {
               <div className="w-5 h-2 rounded-full bg-[#2EAF7D]"></div> {/* Step 6: Active (Green) */}
             </div>
 
-            {/* See Results Button (Replaces Next) */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={!isAllAnswered || isSubmitting}
-              className={`
-                flex items-center gap-2 font-semibold text-[15px] px-5 py-3 rounded-[10px] min-h-[44px] transition-all duration-200
-                ${
-                  !isAllAnswered
-                    ? "bg-[#DDE4EA] text-[#5A6473] cursor-not-allowed"
-                    : "bg-gradient-to-r from-[#1B9DC8] to-[#2EAF7D] text-white hover:opacity-90 cursor-pointer shadow-sm"
-                }
-              `}
-            >
-              <span>{isSubmitting ? "Loading..." : "See Results →"}</span>
-            </button>
+            {/* See Results Button */}
+            {!isSubmitting && isAllAnswered ? (
+                <button
+                  onClick={handleSubmit}
+                  className="flex items-center gap-2 font-semibold text-[15px] px-5 py-3 rounded-[10px] min-h-[44px] bg-gradient-to-r from-[#1B9DC8] to-[#2EAF7D] text-white hover:opacity-90 cursor-pointer shadow-sm"
+                >
+                  <span>See Results →</span>
+                </button>
+              ) : isSubmitting ? (
+                <span className="flex items-center gap-2 font-semibold text-[15px] px-5 py-3 rounded-[10px] min-h-[44px] bg-gradient-to-r from-[#1B9DC8] to-[#2EAF7D] text-white opacity-80">
+                  <span>Loading...</span>
+                </span>
+              ) : (
+                <span className="flex items-center gap-2 font-semibold text-[15px] px-5 py-3 rounded-[10px] min-h-[44px] bg-[#DDE4EA] text-[#5A6473] cursor-not-allowed">
+                  <span>See Results →</span>
+                </span>
+              )}
           </div>
         </div>
       </div>

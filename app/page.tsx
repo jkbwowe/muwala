@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
+//import {useRouter} from 'next/navigation';
 import { useEffect } from 'react';
 
 // ============================================================================
@@ -56,11 +56,12 @@ const HeartIcon = ({ className }: { className?: string }) => (
 // PAGE COMPONENT
 // ============================================================================
 export default function MuwalaLandingPage() {
+  /*
   const router = useRouter();
 
   const handleStart = () => {
     router.push('/assessment/about-you')
-  }
+  }  */
 
   // app/page.tsx — add this useEffect
 
@@ -122,14 +123,14 @@ useEffect(() => {
             </h1>
             
             <p className="text-[#5A6473] text-[15px] md:text-[17px] leading-[1.6] md:leading-[1.7] max-w-[480px] mb-8">
-              MUWALA is a private, judgment-free assessment designed for young women. Answer a few questions and receive a personalised risk report — instantly, offline.
+              MUWALA is a private, judgment-free assessment designed for young women. Answer a few questions and receive a personalised risk report instantly and offline.
             </p>
             
-            <button
-              onClick={handleStart}
+            <Link
+              href="/assessment/about-you"
               className="w-full md:w-auto bg-[#1B9DC8] hover:bg-[#126E8E] text-white font-semibold text-[16px] px-8 py-4 rounded-[10px] min-h-[44px] flex justify-center items-center gap-2 transition-colors mb-4 shadow-sm">
               Start Assessment &rarr;
-            </button>
+            </Link>
             
             <div className="flex items-center justify-center md:justify-start gap-2 text-[#5A6473] text-[13px]">
               <LockIcon className="w-4 h-4 text-[#2EAF7D]" />
